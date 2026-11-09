@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import type { Dictionary } from '@/i18n';
 import { SECTION_IDS } from '@/config/site';
-import SectionBadge from '@/components/ui/SectionBadge.astro';
 import packsWhite from '@/assets/images/pack-exclusive.jpg';
 import packBlack from '@/assets/images/pack-black-open.jpg';
 
@@ -44,9 +43,6 @@ const lines = [
           ))}
         </ul>
       </div>
-    </div>
-    <div class="about__badge">
-      <SectionBadge number={2} />
     </div>
   </div>
 
@@ -167,11 +163,6 @@ const lines = [
     background: var(--c-red);
     transform: rotate(45deg);
   }
-  .about__badge {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 1.5rem;
-  }
 
   .lines {
     padding-top: var(--section-y);
@@ -259,10 +250,6 @@ const lines = [
     }
     .about__tag {
       bottom: calc(var(--radius-panel) + 1rem);
-    }
-    .about__badge {
-      top: 1rem;
-      bottom: auto;
     }
     .lines__grid {
       grid-template-columns: 1fr;

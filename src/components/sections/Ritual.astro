@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import type { Dictionary } from '@/i18n';
 import { SECTION_IDS } from '@/config/site';
-import SectionBadge from '@/components/ui/SectionBadge.astro';
 import velvet from '@/assets/images/pack-black-velvet.jpg';
 
 interface Props {
@@ -28,9 +27,6 @@ const { t } = Astro.props;
         class="ritual__img"
       />
     </div>
-  </div>
-  <div class="ritual__badge">
-    <SectionBadge number={9} />
   </div>
 </section>
 
@@ -79,11 +75,6 @@ const { t } = Astro.props;
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-  }
-  .ritual__badge {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 1.5rem;
   }
   @media (max-width: 900px) {
     .ritual__inner {

@@ -50,7 +50,7 @@ src/
 │   └── images/           # Product & campaign photography (optimized at build/request time)
 ├── components/
 │   ├── sections/         # Page sections (Hero, About, FeatureSection, Specs, Ritual, Partner)
-│   ├── ui/               # Small building blocks (Wordmark, SectionBadge, SpecList)
+│   ├── ui/               # Small building blocks (Wordmark, SpecList)
 │   ├── AgeGate.astro     # 18+ dialog
 │   ├── ContactForm.astro # Partner inquiry form (client-side validation + fetch)
 │   ├── Header.astro / Footer.astro / LanguageSwitcher.astro

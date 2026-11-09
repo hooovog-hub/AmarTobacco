@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import type { Dictionary } from '@/i18n';
 import { SECTION_IDS } from '@/config/site';
-import SectionBadge from '@/components/ui/SectionBadge.astro';
 import packsGrid from '@/assets/images/packs-black-grid.jpg';
 
 interface Props {
@@ -52,9 +51,6 @@ const s = t.specs;
       </div>
       <p class="specs-section__note">{s.note}</p>
     </div>
-  </div>
-  <div class="specs-section__badge">
-    <SectionBadge number={8} />
   </div>
 </section>
 
@@ -146,12 +142,6 @@ const s = t.specs;
   .specs-section__note {
     font-size: var(--fs-sm);
     opacity: 0.75;
-  }
-  .specs-section__badge {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 1.5rem;
-    z-index: 2;
   }
 
   @media (max-width: 900px) {

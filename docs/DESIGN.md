@@ -4,14 +4,13 @@ Source: `AMAR_Presentation_3.pdf` (product presentation, June 2026).
 
 ## Visual language
 
-| Element    | From the deck                                | On the site                                |
-| ---------- | -------------------------------------------- | ------------------------------------------ |
-| Colors     | Deep black, AMAR red, metallic gold, white   | Tokens in `src/styles/global.css`          |
-| Wordmark   | Serif "AMAR" with gold gradient              | `Wordmark.astro` (`gold` / `bright` tones) |
-| Crest      | Rearing horses, crown, red shield            | `assets/images/crest.png`                  |
-| Headings   | Heavy geometric sans, all caps               | Montserrat 800 (Noto Sans Armenian for HY) |
-| Panels     | Color blocks with very large rounded corners | `--radius-panel`, `FeatureSection.astro`   |
-| Page marks | Red numbered badge with a gold crown         | `SectionBadge.astro`                       |
+| Element  | From the deck                                | On the site                                |
+| -------- | -------------------------------------------- | ------------------------------------------ |
+| Colors   | Deep black, AMAR red, metallic gold, white   | Tokens in `src/styles/global.css`          |
+| Wordmark | Serif "AMAR" with gold gradient              | `Wordmark.astro` (`gold` / `bright` tones) |
+| Crest    | Rearing horses, crown, red shield            | `assets/images/crest.png`                  |
+| Headings | Heavy geometric sans, all caps               | Montserrat 800 (Noto Sans Armenian for HY) |
+| Panels   | Color blocks with very large rounded corners | `--radius-panel`, `FeatureSection.astro`   |
 
 ## Page map (slide → section)
 

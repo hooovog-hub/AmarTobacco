@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import type { Dictionary, Locale } from '@/i18n';
 import { SECTION_IDS, SITE } from '@/config/site';
-import SectionBadge from '@/components/ui/SectionBadge.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import partners from '@/assets/images/partners.jpg';
 import crest from '@/assets/images/crest.png';
@@ -47,9 +46,6 @@ const p = t.partner;
     <div data-reveal>
       <ContactForm t={t} locale={locale} />
     </div>
-  </div>
-  <div class="partner__badge">
-    <SectionBadge number={10} />
   </div>
 </section>
 
@@ -123,11 +119,6 @@ const p = t.partner;
   }
   .partner__pill a:hover {
     text-decoration: underline;
-  }
-  .partner__badge {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 1.5rem;
   }
   @media (max-width: 960px) {
     .partner__inner {

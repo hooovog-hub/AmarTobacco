@@ -7,12 +7,10 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import type { FeatureCopy } from '@/i18n/types';
 import { richText } from '@/i18n';
-import SectionBadge from '@/components/ui/SectionBadge.astro';
 import SpecList from '@/components/ui/SpecList.astro';
 
 interface Props {
   id: string;
-  number: number;
   copy: FeatureCopy;
   image: ImageMetadata;
   imageAlt: string;
@@ -24,7 +22,7 @@ interface Props {
   fit?: 'cover' | 'contain';
 }
 
-const { id, number, copy, image, imageAlt, tone, side, fit = 'cover' } = Astro.props;
+const { id, copy, image, imageAlt, tone, side, fit = 'cover' } = Astro.props;
 ---
 
 <section
@@ -49,9 +47,6 @@ const { id, number, copy, image, imageAlt, tone, side, fit = 'cover' } = Astro.p
       loading="lazy"
       class="feature__img"
     />
-  </div>
-  <div class="feature__badge">
-    <SectionBadge number={number} />
   </div>
 </section>
 
@@ -149,13 +144,6 @@ const { id, number, copy, image, imageAlt, tone, side, fit = 'cover' } = Astro.p
     object-fit: contain;
   }
 
-  .feature__badge {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 1.5rem;
-    z-index: 2;
-  }
-
   @media (max-width: 900px) {
     .feature {
       grid-template-columns: 1fr;
@@ -183,10 +171,6 @@ const { id, number, copy, image, imageAlt, tone, side, fit = 'cover' } = Astro.p
     }
     .feature--light.feature--contain .feature__media {
       padding-bottom: 0;
-    }
-    .feature__badge {
-      top: 1rem;
-      bottom: auto;
     }
   }
 </style>

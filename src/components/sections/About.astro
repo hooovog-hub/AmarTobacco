@@ -1,0 +1,279 @@
+---
+import { Image } from 'astro:assets';
+import type { Dictionary } from '@/i18n';
+import { SECTION_IDS } from '@/config/site';
+import SectionBadge from '@/components/ui/SectionBadge.astro';
+import packsWhite from '@/assets/images/pack-exclusive.jpg';
+import packBlack from '@/assets/images/pack-black-open.jpg';
+
+interface Props {
+  t: Dictionary;
+}
+const { t } = Astro.props;
+const a = t.about;
+const lines = [
+  { copy: a.exclusive, image: packsWhite, tar: '1', nicotine: '0.1', tone: 'light' },
+  { copy: a.black, image: packBlack, tar: '4', nicotine: '0.4', tone: 'dark' },
+] as const;
+---
+
+<section id={SECTION_IDS.about} class="about">
+  <div class="about__split">
+    <div class="about__media">
+      <Image
+        src={packsWhite}
+        alt={a.imageAlt}
+        widths={[480, 800, 1200]}
+        sizes="(max-width: 900px) 100vw, 50vw"
+        class="about__img"
+      />
+      <p class="about__tag">
+        <span>{a.format}:</span>
+        <span>{a.tar}: 1 mg</span>
+        <span>{a.nicotine}: 0.1 mg</span>
+      </p>
+    </div>
+    <div class="about__panel">
+      <div class="about__copy" data-reveal>
+        <span class="kicker">{a.kicker}</span>
+        <h2 class="title">{a.title}</h2>
+        <p class="about__body">{a.body}</p>
+        <ul class="about__points">
+          {a.points.map((p) => (
+            <li>{p}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="about__badge">
+      <SectionBadge number={2} />
+    </div>
+  </div>
+
+  <div class="lines container">
+    <h3 class="lines__title">
+      <span class="kicker">{a.linesTitle}</span>
+    </h3>
+    <div class="lines__grid">
+      {lines.map((l) => (
+        <article class={`line line--${l.tone}`} data-reveal>
+          <Image
+            src={l.image}
+            alt=""
+            widths={[400, 700]}
+            sizes="(max-width: 700px) 100vw, 40vw"
+            class="line__img"
+          />
+          <div class="line__body">
+            <h4 class="line__name">{l.copy.name}</h4>
+            <p class="line__desc">{l.copy.description}</p>
+            <dl class="line__specs">
+              <div>
+                <dt>{a.format}</dt>
+                <dd>97 mm</dd>
+              </div>
+              <div>
+                <dt>{a.tar}</dt>
+                <dd>{l.tar} mg</dd>
+              </div>
+              <div>
+                <dt>{a.nicotine}</dt>
+                <dd>{l.nicotine} mg</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    background: var(--c-white);
+    color: var(--c-ink);
+    padding-bottom: var(--section-y);
+  }
+  .about__split {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: min(100vh, 860px);
+  }
+  .about__media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: var(--section-y) var(--gutter);
+    background: #efefed;
+  }
+  .about__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 40% 50%;
+  }
+  .about__tag {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 2.5rem;
+    display: grid;
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--c-ink);
+    font-size: var(--fs-sm);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.35;
+  }
+  .about__panel {
+    display: flex;
+    align-items: center;
+    padding: var(--section-y) var(--gutter);
+    margin-left: calc(var(--radius-panel) * -1);
+    background: var(--c-black);
+    color: var(--c-white);
+    border-radius: var(--radius-panel) 0 0 var(--radius-panel);
+    position: relative;
+  }
+  .about__copy {
+    display: grid;
+    gap: 1.5rem;
+    width: min(100%, 34rem);
+    padding-left: calc(var(--radius-panel) * 0.6);
+  }
+  .about__body {
+    font-size: var(--fs-lg);
+    opacity: 0.85;
+  }
+  .about__points {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0;
+    list-style: none;
+  }
+  .about__points li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+    font-weight: 700;
+  }
+  .about__points li::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--c-red);
+    transform: rotate(45deg);
+  }
+  .about__badge {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 1.5rem;
+  }
+
+  .lines {
+    padding-top: var(--section-y);
+  }
+  .lines__title {
+    margin-bottom: 2rem;
+  }
+  .lines__title .kicker {
+    color: var(--c-red);
+  }
+  .lines__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .line {
+    display: grid;
+    grid-template-columns: 42% 1fr;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 2rem;
+  }
+  .line--light {
+    background: #efefed;
+  }
+  .line--dark {
+    background: var(--c-black);
+    color: var(--c-white);
+  }
+  .line__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .line--light .line__img {
+    mix-blend-mode: multiply;
+  }
+  .line__body {
+    display: grid;
+    gap: 1rem;
+    padding: 2rem 1.75rem;
+  }
+  .line__name {
+    font-family: var(--font-serif);
+    font-size: clamp(1.6rem, 1.2rem + 1vw, 2.2rem);
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.1;
+  }
+  .line--dark .line__name {
+    color: var(--c-gold);
+  }
+  .line__desc {
+    font-size: var(--fs-sm);
+    opacity: 0.75;
+  }
+  .line__specs {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .line__specs dt {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .line__specs dd {
+    font-weight: 800;
+    font-size: var(--fs-lg);
+  }
+
+  @media (max-width: 900px) {
+    .about__split {
+      grid-template-columns: 1fr;
+    }
+    .about__panel {
+      margin: calc(var(--radius-panel) * -1) 0 0;
+      border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+    }
+    .about__copy {
+      padding-left: 0;
+    }
+    .about__media {
+      padding-bottom: calc(var(--radius-panel) + 4rem);
+    }
+    .about__tag {
+      bottom: calc(var(--radius-panel) + 1rem);
+    }
+    .about__badge {
+      top: 1rem;
+      bottom: auto;
+    }
+    .lines__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .line {
+      grid-template-columns: 1fr;
+    }
+    .line__img {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

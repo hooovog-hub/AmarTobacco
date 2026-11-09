@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getDictionary, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+---
+
+<BaseLayout locale={locale} title={t.privacy.title}>
+  <article class="legal container">
+    <h1 class="title">{t.privacy.title}</h1>
+    <p class="legal__updated">{t.privacy.updated}</p>
+    {t.privacy.sections.map((s) => (
+      <section>
+        <h2>{s.heading}</h2>
+        <p>{s.body}</p>
+      </section>
+    ))}
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    display: grid;
+    gap: 2rem;
+    max-width: 48rem;
+    padding-block: calc(var(--header-h) + 4rem) var(--section-y);
+  }
+  .legal__updated {
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+  }
+  .legal section {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-line-dark);
+  }
+  .legal h2 {
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--c-gold);
+  }
+  .legal p {
+    opacity: 0.85;
+  }
+</style>

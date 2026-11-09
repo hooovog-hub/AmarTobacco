@@ -1,0 +1,48 @@
+---
+import type { Spec } from '@/i18n/types';
+
+interface Props {
+  specs: readonly Spec[];
+}
+const { specs } = Astro.props;
+---
+
+<dl class="specs">
+  {specs.map(([label, value]) => (
+    <div class="specs__row">
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .specs {
+    display: grid;
+    gap: 0;
+    font-size: var(--fs-sm);
+  }
+  .specs__row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 40%) 1fr;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--spec-line, var(--c-line-dark));
+  }
+  .specs__row:last-child {
+    border-bottom: 1px solid var(--spec-line, var(--c-line-dark));
+  }
+  dt {
+    opacity: 0.65;
+    font-weight: 500;
+  }
+  dd {
+    font-weight: 700;
+  }
+  @media (max-width: 420px) {
+    .specs__row {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+  }
+</style>

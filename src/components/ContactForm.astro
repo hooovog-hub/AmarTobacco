@@ -1,0 +1,287 @@
+---
+import type { Dictionary, Locale } from '@/i18n';
+
+interface Props {
+  t: Dictionary;
+  locale: Locale;
+}
+const { t, locale } = Astro.props;
+const f = t.partner.form;
+---
+
+<form
+  class="form"
+  method="post"
+  action="/api/contact"
+  novalidate
+  data-contact-form
+  data-msg-sending={f.sending}
+  data-msg-success={f.success}
+  data-msg-error={f.errorGeneric}
+  data-msg-unavailable={f.errorUnavailable}
+  data-msg-validation={f.errorValidation}
+>
+  <h3 class="form__title">{f.title}</h3>
+
+  <input type="hidden" name="locale" value={locale} />
+  <input type="hidden" name="startedAt" value="" data-started-at />
+  <!-- Honeypot: hidden from people, tempting for bots -->
+  <div class="form__hp" aria-hidden="true">
+    <label>
+      Website <input type="text" name="website" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  <div class="form__grid">
+    <label class="field">
+      <span class="field__label">{f.name} *</span>
+      <input name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" />
+    </label>
+    <label class="field">
+      <span class="field__label">{f.company} *</span>
+      <input
+        name="company"
+        type="text"
+        required
+        minlength="2"
+        maxlength="160"
+        autocomplete="organization"
+      />
+    </label>
+    <label class="field">
+      <span class="field__label">{f.email} *</span>
+      <input name="email" type="email" required maxlength="200" autocomplete="email" />
+    </label>
+    <label class="field">
+      <span class="field__label">{f.phone}</span>
+      <input name="phone" type="tel" maxlength="40" autocomplete="tel" />
+    </label>
+    <label class="field">
+      <span class="field__label">{f.country} *</span>
+      <input
+        name="country"
+        type="text"
+        required
+        minlength="2"
+        maxlength="80"
+        autocomplete="country-name"
+      />
+    </label>
+    <label class="field">
+      <span class="field__label">{f.partnerType} *</span>
+      <select name="partnerType" required>
+        <option value="" disabled selected hidden>
+          —
+        </option>
+        {f.partnerTypes.map((p) => (
+          <option value={p.value}>{p.label}</option>
+        ))}
+      </select>
+    </label>
+    <label class="field field--full">
+      <span class="field__label">{f.message} *</span>
+      <textarea
+        name="message"
+        rows="4"
+        required
+        minlength="10"
+        maxlength="4000"
+        placeholder={f.messagePlaceholder}
+      ></textarea>
+    </label>
+    <label class="consent field--full">
+      <input type="checkbox" name="consent" required />
+      <span>{f.consent}</span>
+    </label>
+  </div>
+
+  <div class="form__footer">
+    <button class="btn btn--red form__submit" type="submit" data-submit>
+      {f.submit}
+    </button>
+    <p class="form__status" role="status" aria-live="polite" data-status></p>
+  </div>
+</form>
+
+<script>
+  type ApiResponse = { ok: boolean; errors?: string[]; reason?: string };
+
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const started = form.querySelector<HTMLInputElement>('[data-started-at]')!;
+    const msg = form.dataset;
+    started.value = String(Date.now());
+
+    const setStatus = (text: string, kind: 'info' | 'ok' | 'error') => {
+      status.textContent = text;
+      status.dataset.kind = kind;
+    };
+    const markInvalid = (names: string[]) => {
+      form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+      const fields = names
+        .map((n) => form.elements.namedItem(n))
+        .filter((el): el is HTMLInputElement => el instanceof HTMLElement);
+      fields.forEach((el) => el.setAttribute('aria-invalid', 'true'));
+      fields[0]?.focus();
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const invalid = [...form.querySelectorAll<HTMLInputElement>('input, select, textarea')]
+        .filter((el) => el.name && !el.checkValidity())
+        .map((el) => el.name);
+      if (invalid.length) {
+        markInvalid(invalid);
+        setStatus(msg.msgValidation!, 'error');
+        return;
+      }
+
+      submit.disabled = true;
+      setStatus(msg.msgSending!, 'info');
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const data = (await res.json().catch(() => ({ ok: false }))) as ApiResponse;
+        if (res.ok && data.ok) {
+          form.reset();
+          markInvalid([]);
+          started.value = String(Date.now());
+          setStatus(msg.msgSuccess!, 'ok');
+        } else if (data.errors?.length) {
+          markInvalid(data.errors);
+          setStatus(msg.msgValidation!, 'error');
+        } else {
+          setStatus(data.reason === 'unavailable' ? msg.msgUnavailable! : msg.msgError!, 'error');
+        }
+      } catch {
+        setStatus(msg.msgError!, 'error');
+      } finally {
+        submit.disabled = false;
+      }
+    });
+
+    form.addEventListener('input', (e) => {
+      const el = e.target as HTMLElement;
+      if (el.getAttribute('aria-invalid')) el.removeAttribute('aria-invalid');
+    });
+  });
+</script>
+
+<style>
+  .form {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+    background: var(--c-white);
+    color: var(--c-ink);
+    border-radius: 2rem;
+    box-shadow: 0 30px 80px rgb(0 0 0 / 0.4);
+  }
+  .form__title {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .form__hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.25rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .field--full {
+    grid-column: 1 / -1;
+  }
+  .field__label {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--c-paper);
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    background: var(--c-white);
+    border-color: var(--c-ink);
+  }
+  .form :global([aria-invalid='true']) {
+    border-color: var(--c-red) !important;
+    background: #fff3f3 !important;
+  }
+  .consent {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-size: var(--fs-xs);
+    color: #555;
+  }
+  .consent input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.1rem;
+    accent-color: var(--c-red);
+  }
+  .consent :global(input[aria-invalid='true']) {
+    outline: 2px solid var(--c-red);
+  }
+  .form__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .form__submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+    transform: none;
+  }
+  .form__status {
+    flex: 1 1 14rem;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .form__status[data-kind='ok'] {
+    color: #157a3c;
+  }
+  .form__status[data-kind='error'] {
+    color: var(--c-red);
+  }
+  @media (max-width: 600px) {
+    .form__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import type { Dictionary } from '@/i18n';
+import { SECTION_IDS } from '@/config/site';
+import SectionBadge from '@/components/ui/SectionBadge.astro';
+import velvet from '@/assets/images/pack-black-velvet.jpg';
+
+interface Props {
+  t: Dictionary;
+}
+const { t } = Astro.props;
+---
+
+<section id={SECTION_IDS.ritual} class="ritual">
+  <div class="ritual__inner container">
+    <div class="ritual__copy" data-reveal>
+      <h2 class="ritual__title">{t.ritual.title}</h2>
+      {t.ritual.body.map((p) => (
+        <p class="ritual__body">{p}</p>
+      ))}
+    </div>
+    <div class="ritual__media" data-reveal>
+      <Image
+        src={velvet}
+        alt={t.ritual.imageAlt}
+        widths={[480, 800, 1200]}
+        sizes="(max-width: 900px) 90vw, 45vw"
+        class="ritual__img"
+      />
+    </div>
+  </div>
+  <div class="ritual__badge">
+    <SectionBadge number={9} />
+  </div>
+</section>
+
+<style>
+  .ritual {
+    position: relative;
+    padding-block: var(--section-y);
+    background:
+      radial-gradient(ellipse at 75% 20%, rgb(255 255 255 / 0.08), transparent 55%), var(--c-black);
+    overflow: hidden;
+  }
+  .ritual__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 3rem;
+  }
+  .ritual__copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .ritual__title {
+    margin-bottom: 1rem;
+    font-size: clamp(3rem, 1.5rem + 6vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  :lang(hy) .ritual__title {
+    font-size: clamp(2.4rem, 1.2rem + 4.5vw, 5rem);
+  }
+  .ritual__body {
+    max-width: 30rem;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .ritual__media {
+    justify-self: end;
+    width: min(100%, 30rem);
+    overflow: hidden;
+    border-radius: 999px 999px 2rem 2rem;
+  }
+  .ritual__img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .ritual__badge {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 1.5rem;
+  }
+  @media (max-width: 900px) {
+    .ritual__inner {
+      grid-template-columns: 1fr;
+    }
+    .ritual__media {
+      justify-self: center;
+    }
+  }
+</style>

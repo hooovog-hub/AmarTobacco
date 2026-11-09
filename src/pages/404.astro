@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Wordmark from '@/components/ui/Wordmark.astro';
+import { getDictionary, isLocale, localizePath, DEFAULT_LOCALE } from '@/i18n';
+
+// Static 404: pick the language from the URL when possible.
+const seg = Astro.url.pathname.split('/')[1];
+const locale = isLocale(seg) ? seg : DEFAULT_LOCALE;
+const t = getDictionary(locale);
+---
+
+<BaseLayout locale={locale} title={t.notFound.title} noindex>
+  <section class="nf container">
+    <div class="nf__mark">
+      <Wordmark label="" />
+    </div>
+    <p class="nf__code">404</p>
+    <h1 class="title">{t.notFound.title}</h1>
+    <p>{t.notFound.body}</p>
+    <a class="btn btn--red" href={localizePath(locale)}>
+      {t.notFound.back}
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    min-height: 80vh;
+    align-content: center;
+    padding-block: calc(var(--header-h) + 3rem) 4rem;
+    text-align: center;
+  }
+  .nf__mark {
+    width: min(70%, 20rem);
+    opacity: 0.9;
+  }
+  .nf__code {
+    font-size: var(--fs-sm);
+    font-weight: 800;
+    letter-spacing: 0.5em;
+    color: var(--c-red);
+  }
+</style>

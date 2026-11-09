@@ -1,0 +1,144 @@
+---
+import { Image } from 'astro:assets';
+import { getDictionary, localizePath, type Locale } from '@/i18n';
+import { SITE } from '@/config/site';
+import Wordmark from '@/components/ui/Wordmark.astro';
+import crest from '@/assets/images/crest.png';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__warning" role="note">
+    <p>{t.footer.warning}</p>
+  </div>
+
+  <div class="footer__main container">
+    <div class="footer__brand">
+      <Image src={crest} alt="" width={120} class="footer__crest" />
+      <div class="footer__wordmark">
+        <Wordmark label="AMAR" />
+      </div>
+      <p class="footer__tagline">{t.footer.tagline}</p>
+    </div>
+
+    <div class="footer__contact">
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <a href={SITE.url}>{SITE.url.replace('https://', '')}</a>
+    </div>
+  </div>
+
+  <div class="footer__bottom container">
+    <p class="footer__legal">
+      <span class="footer__age">{SITE.minAge}+</span>
+      {t.footer.legal}
+    </p>
+    <div class="footer__meta">
+      <span>
+        © {year} {SITE.legalName}. {t.footer.rights}
+      </span>
+      <a href={localizePath(locale, '/privacy')}>{t.footer.privacy}</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--c-black);
+    border-top: 1px solid var(--c-line-dark);
+  }
+  .footer__warning {
+    padding: 1.4rem var(--gutter);
+    background: var(--c-white);
+    color: var(--c-black);
+    text-align: center;
+    border-bottom: 6px solid var(--c-black);
+  }
+  .footer__warning p {
+    font-size: clamp(1.4rem, 1rem + 2vw, 2.4rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+  .footer__main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 4rem 3rem;
+  }
+  .footer__brand {
+    display: grid;
+    gap: 1rem;
+  }
+  .footer__crest {
+    width: 5.5rem;
+  }
+  .footer__wordmark {
+    width: 12rem;
+  }
+  .footer__tagline {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .footer__contact {
+    display: grid;
+    gap: 0.4rem;
+    text-align: right;
+    font-weight: 600;
+  }
+  .footer__contact a {
+    text-decoration: none;
+  }
+  .footer__contact a:hover {
+    color: var(--c-gold);
+  }
+  .footer__bottom {
+    display: grid;
+    gap: 1rem;
+    padding-block: 1.5rem 2rem;
+    border-top: 1px solid var(--c-line-dark);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+  .footer__legal {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+  }
+  .footer__age {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 2px solid var(--c-red);
+    border-radius: 50%;
+    color: var(--c-white);
+    font-weight: 800;
+  }
+  .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+  }
+  .footer__meta a:hover {
+    color: var(--c-white);
+  }
+  @media (max-width: 640px) {
+    .footer__contact {
+      text-align: left;
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+/**
+ * The AMAR serif wordmark (from Identity/SVG) with the gold gradient used on the cover slide.
+ */
+interface Props {
+  class?: string;
+  /** Accessible label; pass an empty string when the wordmark is decorative. */
+  label?: string;
+  /** `gold` = metallic cover gradient (on black); `bright` = warm yellow used on red panels. */
+  tone?: 'gold' | 'bright';
+}
+const { class: className, label = 'AMAR', tone = 'gold' } = Astro.props;
+const gradientId = `amar-gold-${Math.random().toString(36).slice(2, 8)}`;
+const stops =
+  tone === 'bright'
+    ? ['#ffd54f', '#fbbd2c', '#f7aa1c', '#f39c12']
+    : ['#ffdf7e', '#e3ac43', '#b07a26', '#7b4810'];
+---
+
+<svg
+  class:list={['wordmark', className]}
+  viewBox="0 0 470.38 119.29"
+  xmlns="http://www.w3.org/2000/svg"
+  role={label ? 'img' : undefined}
+  aria-label={label || undefined}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <defs>
+    <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="0.35">
+      <stop offset="0" stop-color={stops[0]}></stop>
+      <stop offset="0.4" stop-color={stops[1]}></stop>
+      <stop offset="0.75" stop-color={stops[2]}></stop>
+      <stop offset="1" stop-color={stops[3]}></stop>
+    </linearGradient>
+  </defs>
+  <path
+    fill={`url(#${gradientId})`}
+    d="M447.95,119.29l4.04-5.05-35.02-40.24h-24.84v39.19l10.07,6.1h-52.64l5.89-4.96-21.18-50.91h-43.08l-20.36,49.1,8.03,6.77h-22.98l-.68-3.11,10.1-4.64L308.92,6.82l-11.28-6.82h20.84l46.97,112.69,7.79,3.47-.59,2.76,9.47-5.74V5.96l-10.36-5.96h55.46c20.4,0,37,16.6,37,37s-16.09,36.49-36.05,36.99l33.68,38.71,8.55,3.42-.61,3.18h-21.82ZM422.58,68.6c17.52,0,31.77-14.18,31.77-31.6s-14.25-31.6-31.77-31.6h-30.45v63.21h30.45ZM331.96,58.19l-19.3-46.43-19.15,46.43h38.45ZM224.31,119.29l10.36-5.96V13.73l-48.81,105.56h-4.26l-48.33-101.48v94.04l12.77,7.44h-51.68l5.88-4.95-21.18-50.92h-43.07l-20.36,49.1,8.03,6.77H.68l-.68-3.11,10.1-4.64L53.7,6.82,42.42,0h20.84l46.97,112.69,7.79,3.47-.41,1.91,10.45-6.22V7.43l-12.48-7.43h20.53l50.26,106L235.15,0h22.12l-12.57,7.59v105.6l10.07,6.1h-30.46ZM76.74,58.19L57.44,11.76l-19.15,46.43h38.45Z"
+  ></path>
+</svg>
+
+<style>
+  .wordmark {
+    width: 100%;
+    height: auto;
+  }
+</style>

@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import type { Dictionary, Locale } from '@/i18n';
+import { SECTION_IDS, SITE } from '@/config/site';
+import SectionBadge from '@/components/ui/SectionBadge.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import partners from '@/assets/images/partners.jpg';
+import crest from '@/assets/images/crest.png';
+
+interface Props {
+  t: Dictionary;
+  locale: Locale;
+}
+const { t, locale } = Astro.props;
+const p = t.partner;
+---
+
+<section id={SECTION_IDS.partner} class="partner">
+  <Image
+    src={partners}
+    alt=""
+    widths={[800, 1400, 1800]}
+    sizes="100vw"
+    class="partner__bg"
+    aria-hidden="true"
+  />
+  <div class="partner__inner container">
+    <div class="partner__intro" data-reveal>
+      <Image src={crest} alt="" width={200} class="partner__crest" />
+      <span class="kicker">{p.kicker}</span>
+      <h2 class="title">{p.title}</h2>
+      <p class="partner__lead">{p.lead}</p>
+      {p.body.map((b) => (
+        <p class="partner__body">{b}</p>
+      ))}
+      <div class="partner__pill">
+        <a href={`mailto:${SITE.email}`}>
+          <span class="sr-only">{p.emailLabel}: </span>
+          {SITE.email}
+        </a>
+        <a href={SITE.url}>
+          <span class="sr-only">{p.webLabel}: </span>
+          {SITE.url.replace('https://', '')}
+        </a>
+      </div>
+    </div>
+    <div data-reveal>
+      <ContactForm t={t} locale={locale} />
+    </div>
+  </div>
+  <div class="partner__badge">
+    <SectionBadge number={10} />
+  </div>
+</section>
+
+<style>
+  .partner {
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--section-y);
+    overflow: hidden;
+    background: var(--c-black);
+  }
+  .partner__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 40%;
+    opacity: 0.35;
+    filter: grayscale(0.3);
+  }
+  .partner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      rgb(5 5 5 / 0.95) 0%,
+      rgb(5 5 5 / 0.6) 55%,
+      rgb(5 5 5 / 0.85) 100%
+    );
+  }
+  .partner__inner {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+  }
+  .partner__intro {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .partner__crest {
+    width: 7rem;
+  }
+  .partner__lead {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+  }
+  .partner__body {
+    opacity: 0.8;
+  }
+  .partner__pill {
+    display: grid;
+    gap: 0.2rem;
+    margin-top: 0.75rem;
+    padding: 1rem 2.5rem 1rem 1.5rem;
+    background: var(--c-red);
+    border-radius: 0 999px 999px 0;
+    margin-left: calc(var(--gutter) * -1);
+    padding-left: var(--gutter);
+    font-weight: 700;
+    font-size: var(--fs-lg);
+  }
+  .partner__pill a {
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .partner__pill a:hover {
+    text-decoration: underline;
+  }
+  .partner__badge {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 1.5rem;
+  }
+  @media (max-width: 960px) {
+    .partner__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

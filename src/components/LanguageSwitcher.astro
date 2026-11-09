@@ -1,0 +1,60 @@
+---
+import { LOCALES, LOCALE_LABELS, localizePath, stripLocale, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+  label: string;
+}
+const { locale, label } = Astro.props;
+const basePath = stripLocale(Astro.url.pathname);
+---
+
+<nav class="lang" aria-label={label}>
+  <ul>
+    {LOCALES.map((l) => (
+      <li>
+        <a
+          href={localizePath(l, basePath)}
+          hreflang={l}
+          lang={l}
+          title={LOCALE_LABELS[l].name}
+          aria-current={l === locale ? 'true' : undefined}
+        >
+          {LOCALE_LABELS[l].short}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .lang ul {
+    display: inline-flex;
+    gap: 0.15rem;
+    padding: 0.2rem;
+    list-style: none;
+    border: 1px solid var(--c-line-dark);
+    border-radius: 999px;
+  }
+  .lang a {
+    display: block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    opacity: 0.6;
+    transition:
+      opacity 0.2s,
+      background-color 0.2s;
+  }
+  .lang a:hover {
+    opacity: 1;
+  }
+  .lang a[aria-current='true'] {
+    background: var(--c-white);
+    color: var(--c-black);
+    opacity: 1;
+  }
+</style>

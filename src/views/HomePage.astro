@@ -1,0 +1,79 @@
+---
+/** The full landing page, rendered once per locale by the thin route files in src/pages. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import About from '@/components/sections/About.astro';
+import FeatureSection from '@/components/sections/FeatureSection.astro';
+import Specs from '@/components/sections/Specs.astro';
+import Ritual from '@/components/sections/Ritual.astro';
+import Partner from '@/components/sections/Partner.astro';
+import { getDictionary, type Locale } from '@/i18n';
+import { SECTION_IDS } from '@/config/site';
+
+import leaves from '@/assets/images/blend-leaves.jpg';
+import paper from '@/assets/images/paper-delfort.jpg';
+import filter from '@/assets/images/filter.png';
+import hauni from '@/assets/images/machine-hauni.jpg';
+import focke from '@/assets/images/machine-focke.png';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+---
+
+<BaseLayout locale={locale}>
+  <Hero t={t} />
+  <About t={t} />
+  <FeatureSection
+    id={SECTION_IDS.blend}
+    number={3}
+    copy={t.blend}
+    image={leaves}
+    imageAlt={t.blend.imageAlt}
+    tone="black"
+    side="left"
+  />
+  <FeatureSection
+    id={SECTION_IDS.paper}
+    number={4}
+    copy={t.paper}
+    image={paper}
+    imageAlt={t.paper.imageAlt}
+    tone="red"
+    side="right"
+  />
+  <FeatureSection
+    id={SECTION_IDS.filters}
+    number={5}
+    copy={t.filters}
+    image={filter}
+    imageAlt={t.filters.imageAlt}
+    tone="light"
+    side="right"
+    fit="contain"
+  />
+  <FeatureSection
+    id={SECTION_IDS.manufacturing}
+    number={6}
+    copy={t.manufacturing}
+    image={hauni}
+    imageAlt={t.manufacturing.imageAlt}
+    tone="black"
+    side="left"
+  />
+  <FeatureSection
+    id={SECTION_IDS.packaging}
+    number={7}
+    copy={t.packaging}
+    image={focke}
+    imageAlt={t.packaging.imageAlt}
+    tone="red"
+    side="right"
+    fit="contain"
+  />
+  <Specs t={t} />
+  <Ritual t={t} />
+  <Partner t={t} locale={locale} />
+</BaseLayout>

@@ -1,0 +1,192 @@
+---
+/**
+ * Split "slide" section: a rounded color panel with copy + specs on one side and a
+ * full-bleed image on the other. Mirrors slides 3–7 of the presentation.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { FeatureCopy } from '@/i18n/types';
+import { richText } from '@/i18n';
+import SectionBadge from '@/components/ui/SectionBadge.astro';
+import SpecList from '@/components/ui/SpecList.astro';
+
+interface Props {
+  id: string;
+  number: number;
+  copy: FeatureCopy;
+  image: ImageMetadata;
+  imageAlt: string;
+  /** Panel color. `light` renders the copy directly on white, like the filter slide. */
+  tone: 'black' | 'red' | 'light';
+  /** Which side the copy panel sits on. */
+  side: 'left' | 'right';
+  /** `cover` fills the half with a photo; `contain` floats a cut-out product shot. */
+  fit?: 'cover' | 'contain';
+}
+
+const { id, number, copy, image, imageAlt, tone, side, fit = 'cover' } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={['feature', `feature--${tone}`, `feature--${side}`, `feature--${fit}`]}
+>
+  <div class="feature__panel">
+    <div class="feature__copy" data-reveal>
+      <span class="kicker">{copy.kicker}</span>
+      <h2 class="title">{copy.title}</h2>
+      <p class="feature__lead" set:html={richText(copy.lead)} />
+      <p class="feature__body">{copy.body}</p>
+      <SpecList specs={copy.specs} />
+    </div>
+  </div>
+  <div class="feature__media">
+    <Image
+      src={image}
+      alt={imageAlt}
+      widths={[480, 800, 1200, 1600]}
+      sizes="(max-width: 900px) 100vw, 50vw"
+      loading="lazy"
+      class="feature__img"
+    />
+  </div>
+  <div class="feature__badge">
+    <SectionBadge number={number} />
+  </div>
+</section>
+
+<style>
+  .feature {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: min(100vh, 900px);
+    overflow: hidden;
+    background: var(--c-black);
+  }
+  .feature--light {
+    background: var(--c-white);
+    color: var(--c-ink);
+    --spec-line: var(--c-line-light);
+  }
+  .feature--light .kicker {
+    color: var(--c-red);
+  }
+
+  .feature__panel {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    padding: var(--section-y) var(--gutter);
+  }
+  .feature--left .feature__panel {
+    justify-content: flex-end;
+    border-radius: 0 var(--radius-panel) var(--radius-panel) 0;
+  }
+  .feature--right .feature__panel {
+    order: 2;
+    justify-content: flex-start;
+    border-radius: var(--radius-panel) 0 0 var(--radius-panel);
+  }
+  .feature--black .feature__panel {
+    background: var(--c-black);
+  }
+  .feature--red .feature__panel {
+    background: var(--c-red);
+    --spec-line: rgb(255 255 255 / 0.3);
+  }
+  .feature--red .kicker {
+    color: var(--c-white);
+  }
+  .feature--red {
+    background: var(--c-white);
+  }
+
+  .feature__copy {
+    display: grid;
+    gap: 1.4rem;
+    width: min(100%, 34rem);
+  }
+  .feature__lead {
+    font-size: var(--fs-lg);
+    line-height: 1.5;
+  }
+  .feature__lead :global(strong) {
+    font-weight: 800;
+  }
+  .feature__body {
+    opacity: 0.75;
+  }
+
+  .feature__media {
+    position: relative;
+    min-height: 22rem;
+  }
+  /* cover photos run under the panel's rounded corners, so no background shows through */
+  .feature--cover.feature--left .feature__media {
+    margin-inline: calc(var(--radius-panel) * -1) 0;
+  }
+  .feature--cover.feature--right .feature__media {
+    margin-inline: 0 calc(var(--radius-panel) * -1);
+  }
+  .feature__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .feature--contain .feature__media {
+    display: grid;
+    place-items: center;
+    padding: var(--section-y) var(--gutter);
+  }
+  .feature--contain .feature__img {
+    position: static;
+    width: min(100%, 36rem);
+    height: auto;
+    object-fit: contain;
+  }
+
+  .feature__badge {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 1.5rem;
+    z-index: 2;
+  }
+
+  @media (max-width: 900px) {
+    .feature {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .feature__panel,
+    .feature--right .feature__panel {
+      order: 2;
+      justify-content: flex-start;
+      border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+      margin-top: calc(var(--radius-panel) * -1);
+    }
+    .feature--light .feature__panel {
+      margin-top: 0;
+    }
+    .feature__media,
+    .feature--cover.feature--left .feature__media,
+    .feature--cover.feature--right .feature__media {
+      margin: 0;
+      min-height: 100vw;
+    }
+    .feature--contain .feature__media {
+      min-height: 0;
+      padding-bottom: calc(var(--radius-panel) + 2rem);
+    }
+    .feature--light.feature--contain .feature__media {
+      padding-bottom: 0;
+    }
+    .feature__badge {
+      top: 1rem;
+      bottom: auto;
+    }
+  }
+</style>
